@@ -17,8 +17,8 @@ pipeline {
         }
         stage('Security Scan') {
             steps {
-                sh 'npm install -g snyk' // Install Snyk globally
-                sh 'snyk test' // Run Snyk vulnerability scan
+                sh 'npm install -g snyk' // Installing Snyk globally
+                sh 'snyk test' // Running Snyk vulnerability scan
             }
         }
     }
@@ -29,7 +29,7 @@ pipeline {
         failure {
             script {
                 echo 'Critical vulnerabilities detected! Halting the pipeline.' 
-                currentBuild.result = 'FAILURE' // Fail the build if vulnerabilities are found
+                currentBuild.result = 'FAILURE' // Failing build if vulnerabilities are found
             }
         }
     }
