@@ -1,36 +1,38 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:16' 
-        }
-    }
+    agent { docker { image 'node:16' } }
     stages {
         stage('Install Dependencies') {
             steps {
                 sh 'npm install --save'
             }
         }
-        stage('Run Tests') {
+        stage('Test') {
             steps {
-                sh 'npm test' 
+                sh 'npm test'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
             }
         }
         stage('Security Scan') {
             steps {
-                sh 'npm install -g snyk' 
-                sh 'snyk test' 
+                sh 'snyk test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying to production...'
             }
         }
     }
     post {
-        always {
-            junit '**/test-results.xml' 
-        }
         failure {
-            script {
-                echo 'Critical vulnerabilities detected! Halting the pipeline.'
-                currentBuild.result = 'FAILURE' 
-            }
+            echo 'Build failed'
+        }
+        success {
+            echo 'Build succeeded'
         }
     }
 }
