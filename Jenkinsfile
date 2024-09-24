@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'node:16'
+            image 'node:16' 
         }
     }
     stages {
@@ -12,24 +12,24 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                sh 'npm test' 
             }
         }
         stage('Security Scan') {
             steps {
-                sh 'npm install -g snyk' // Installing Snyk globally
-                sh 'snyk test' // Running Snyk vulnerability scan
+                sh 'npm install -g snyk' 
+                sh 'snyk test' 
             }
         }
     }
     post {
         always {
-            junit '**/test-results.xml' // Always capture test results
+            junit '**/test-results.xml' 
         }
         failure {
             script {
-                echo 'Critical vulnerabilities detected! Halting the pipeline.' 
-                currentBuild.result = 'FAILURE' // Failing build if vulnerabilities are found
+                echo 'Critical vulnerabilities detected! Halting the pipeline.'
+                currentBuild.result = 'FAILURE' 
             }
         }
     }
