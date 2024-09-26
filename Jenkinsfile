@@ -45,9 +45,6 @@ pipeline {
                     echo 'Security Scan passed!'
                 }
                 failure {
-                    script {
-                        currentBuild.result = 'SUCCESS' // Allows pipeline to proceed despite vulnerabilities
-                    }
                     echo 'Failed due to vulnerabilities.'
                 }
             }
@@ -56,8 +53,17 @@ pipeline {
         stage('Test Phase') {
             steps {
                 script {
-                    sh 'npm test'
-                    echo 'Tests completed.'
+                    if (fileExists('package.json')) {
+                        def pkg = readJSON file: 'package.json'
+                        if (pkg.scripts && pkg.scripts.test) {
+                            sh 'npm test'
+                            echo 'Tests completed.'
+                        } else {
+                            echo 'No test script found in package.json. Skipping Test Phase.'
+                        }
+                    } else {
+                        echo 'package.json not found. Skipping Test Phase.'
+                    }
                 }
             }
             post {
