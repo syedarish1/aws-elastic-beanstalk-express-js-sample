@@ -46,8 +46,7 @@ pipeline {
                 }
                 failure {
                     script {
-                        // Proceed despite vulnerabilities
-                        currentBuild.result = 'SUCCESS'
+                        currentBuild.result = 'SUCCESS' // Allows pipeline to proceed despite vulnerabilities
                     }
                     echo 'Failed due to vulnerabilities.'
                 }
