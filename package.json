@@ -13,5 +13,8 @@
   "license": "MIT-0",
   "dependencies": {
     "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "snyk": "^1.1293.1"
   }
 }

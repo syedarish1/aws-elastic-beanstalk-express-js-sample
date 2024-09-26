@@ -32,7 +32,11 @@ pipeline {
                 script {
                     def snykResults = sh(script: './node_modules/.bin/snyk test --json', returnStdout: true)
                     def jsonResults = readJSON(text: snykResults)
-                    writeFile file: 'snyk-report.json', text: snykResults
+                    if (jsonResults.vulnerabilities.any { it.severity == 'critical' }) {
+                        error("Vulnerabilities found! Check snyk-report.json.")
+                    } else {
+                        writeFile file: 'snyk-report.json', text: snykResults
+                    }
                 }
                 echo 'Security Scan Completed'
             }
@@ -41,8 +45,11 @@ pipeline {
                     echo 'Security Scan passed!'
                 }
                 failure {
-                    echo 'Security vulnerabilities detected. Check snyk-report.json for details, but proceeding with pipeline.'
-                    currentBuild.result = 'SUCCESS' // Allows the pipeline to proceed despite vulnerabilities
+                    script {
+                        // Proceed despite vulnerabilities
+                        currentBuild.result = 'SUCCESS'
+                    }
+                    echo 'Failed due to vulnerabilities.'
                 }
             }
         }
